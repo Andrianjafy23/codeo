@@ -1,6 +1,10 @@
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
+import dotenv from 'dotenv';
+
+// Charger les variables d'environnement
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -8,10 +12,10 @@ app.use(express.json());
 
 // Connexion à la base de données 'DONNER'
 const dbDonner = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'DONNER'
+  host: process.env.DB_DONNER_HOST,
+  user: process.env.DB_DONNER_USER,
+  password: process.env.DB_DONNER_PASSWORD,
+  database: process.env.DB_DONNER_NAME
 });
 
 dbDonner.connect((err) => {
@@ -24,10 +28,10 @@ dbDonner.connect((err) => {
 
 // Connexion à la base de données 'FORM'
 const dbForm = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'FORM'
+  host: process.env.DB_FORM_HOST,
+  user: process.env.DB_FORM_USER,
+  password: process.env.DB_FORM_PASSWORD,
+  database: process.env.DB_FORM_NAME
 });
 
 dbForm.connect((err) => {
@@ -103,7 +107,7 @@ app.post('/form/login', (req, res) => {
 });
 
 // Démarrer le serveur sur le port spécifié
-const PORT = 8084;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Serveur en écoute sur le port ${PORT}`);
 });
