@@ -6,6 +6,15 @@ import dotenv from 'dotenv';
 // Charger les variables d'environnement
 dotenv.config();
 
+// Afficher les variables d'environnement pour vérification
+console.log('DB_DONNER_HOST:', process.env.DB_DONNER_HOST);
+console.log('DB_DONNER_USER:', process.env.DB_DONNER_USER);
+console.log('DB_DONNER_NAME:', process.env.DB_DONNER_NAME);
+
+console.log('DB_FORM_HOST:', process.env.DB_FORM_HOST);
+console.log('DB_FORM_USER:', process.env.DB_FORM_USER);
+console.log('DB_FORM_NAME:', process.env.DB_FORM_NAME);
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -20,7 +29,7 @@ const dbDonner = mysql.createConnection({
 
 dbDonner.connect((err) => {
   if (err) {
-    console.error('Erreur de connexion à la base de données DONNER:', err);
+    console.error('Erreur de connexion à la base de données DONNER:', err.message);
     return;
   }
   console.log('Connecté à la base de données DONNER.');
@@ -36,7 +45,7 @@ const dbForm = mysql.createConnection({
 
 dbForm.connect((err) => {
   if (err) {
-    console.error('Erreur de connexion à la base de données FORM:', err);
+    console.error('Erreur de connexion à la base de données FORM:', err.message);
     return;
   }
   console.log('Connecté à la base de données FORM.');
@@ -104,6 +113,12 @@ app.post('/form/login', (req, res) => {
       return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
   });
+});
+
+// Middleware pour gérer les erreurs
+app.use((err, req, res, next) => {
+  console.error('Erreur serveur:', err.stack);
+  res.status(500).send('Quelque chose s\'est mal passé !');
 });
 
 // Démarrer le serveur sur le port spécifié
